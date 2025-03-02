@@ -1,4 +1,7 @@
 # order-service
+```
+https://github.com/SharanyaRB/order-service
+```
 Backend Python Service to interact with MySQL DB for order processing
 
 ## 🛠 Setting Up Virtual Environment & Installing Requirements
