@@ -2,6 +2,11 @@
 ```
 https://github.com/SharanyaRB/order-service
 ```
+
+## [View Design Decisions and Trade Off](DESIGN_DECISION.md)
+
+## [View REMOTE SERVER SETUP](REMOTE_SERVER_SETUP.md)
+
 Backend Python Service to interact with MySQL DB for order processing
 
 ## 🛠 Setting Up Virtual Environment & Installing Requirements
