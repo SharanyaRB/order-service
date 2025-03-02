@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
+from flask_httpauth import HTTPBasicAuth
 from queue_handler import order_queue
 from validator import OrderSchema 
 from marshmallow import ValidationError
@@ -6,8 +7,23 @@ from services.order_service import create_new_order, get_order_by_id, get_order_
 
 api_bp = Blueprint('api', __name__)
 order_schema = OrderSchema()  
+auth = HTTPBasicAuth()
+
+@auth.verify_password
+def verify_password(username, password):
+    config_username = current_app.config["AUTH_USERNAME"]
+    config_password = current_app.config["AUTH_PASSWORD"]
+    
+    if username == config_username and password == config_password:
+        return username
+    return None
+
+@api_bp.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({'message': 'Success'}), 200
 
 @api_bp.route('/orders', methods=['POST'])
+@auth.login_required
 def create_order():
     try:
         # Validate incoming request
@@ -23,6 +39,7 @@ def create_order():
         return jsonify({'error': err.messages}), 400
 
 @api_bp.route('/orders/<int:order_id>', methods=['GET'])
+@auth.login_required
 def get_order_status(order_id):
     try:
         order = get_order_by_id(order_id)
@@ -33,5 +50,9 @@ def get_order_status(order_id):
         return jsonify({'error': str(e)}), 500
 
 @api_bp.route('/metrics', methods=['GET'])
+@auth.login_required
 def get_metrics():
     return jsonify(get_order_metrics())
+
+
+

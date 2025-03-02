@@ -22,11 +22,11 @@ def get_order_by_id(order_id):
 
 def get_order_metrics():
     total_orders = Order.query.count()
-    pending_orders = Order.query.filter_by(status='Pending', is_active=True).count()
-    processing_orders = Order.query.filter_by(status='Processing', is_active=True).count()
-    completed_orders = Order.query.filter_by(status='Completed', is_active=True).count()
+    pending_orders = Order.query.filter_by(status='pending', is_active=True).count()
+    processing_orders = Order.query.filter_by(status='processing', is_active=True).count()
+    completed_orders = Order.query.filter_by(status='completed', is_active=True).count()
     
-    completed_orders_data = Order.query.filter(Order.status == 'Completed', Order.is_active == True).all()
+    completed_orders_data = Order.query.filter(Order.status == 'completed', Order.is_active == True).all()
     avg_processing_time = (
         sum(order.processing_time for order in completed_orders_data) / len(completed_orders_data)
         if completed_orders_data else 0
