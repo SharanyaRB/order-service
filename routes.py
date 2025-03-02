@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from models import db, Order
 from queue_handler import order_queue
 from validator import OrderSchema 
 from marshmallow import ValidationError
@@ -13,6 +12,10 @@ def create_order():
     try:
         # Validate incoming request
         data = order_schema.load(request.get_json())
+        # Check if order_id already exists
+        existing_order = get_order_by_id(data['order_id'])
+        if existing_order:
+            return jsonify({'error': 'Duplicate order_id. This order already exists.'}), 400
         new_order = create_new_order(data)
         order_queue.put(new_order.order_id)
         return jsonify({'message': 'Order received', 'order_id': new_order.order_id}), 201
